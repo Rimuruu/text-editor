@@ -2,8 +2,13 @@
 
 
 void loadFileContent(File* file){
-	
-
+	long size = 0;
+	fseek(file->fd,0,SEEK_END);
+	size = ftell(file->fd);
+	file->size = size;
+	file->content = (char*) malloc(size);
+	fseek(file->fd,0,SEEK_SET);
+	fgets(file->content,size,file->fd);
 }
 
 File* openFile(char * source){
@@ -15,11 +20,11 @@ File* openFile(char * source){
 	}
 	fd = fopen(source, "r");
 	if(fd == NULL){
-		retun nullptr;
+		return nullptr;
 	}
 
-	file = malloc(sizeof(File));	
-	file.fd = fd;
+	file = (File *) malloc(sizeof(File));	
+	file->fd = fd;
 	loadFileContent(file);
 	return file; 
 
@@ -29,6 +34,7 @@ File* openFile(char * source){
 
 void closeFile(File* file){
 	fclose(file->fd);
+	free(file->content);
 	free(file);
 }	
 
