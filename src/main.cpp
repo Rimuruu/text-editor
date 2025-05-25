@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
-#include "files.h"
-
-
+#include "editor.h"
 int main(int argc, char** argv){
-	File * file =	openFile(argv[1]);
-	printf("%s\n",file->content);
-	closeFile(file);	
-
-	return 0;
+	if(argc < 2){
+		return -1;	
+	}
+	Editor e;	
+	initEditor(argv[1],&e);
+	loop(&e);
+	closeEditor(&e);
 }

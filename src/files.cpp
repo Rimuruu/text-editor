@@ -11,23 +11,23 @@ void loadFileContent(File* file){
 	fgets(file->content,size,file->fd);
 }
 
-File* openFile(char * source){
+int openFile(char * source, File* file){
 	FILE* fd;
-	File* file;	
-
+	if(file == nullptr){
+		return -1;
+	}
 	if(source == nullptr){
-		return nullptr;
+		return -1;
 	}
 	fd = fopen(source, "r");
 	if(fd == NULL){
-		return nullptr;
+		return -1;
 	}
 
-	file = (File *) malloc(sizeof(File));	
 	file->fd = fd;
+	file->filename = getFilename(source);
 	loadFileContent(file);
-	return file; 
-
+	return 0;
 
 
 }
@@ -35,6 +35,38 @@ File* openFile(char * source){
 void closeFile(File* file){
 	fclose(file->fd);
 	free(file->content);
-	free(file);
-}	
+	free(file->filename);
+	
+}
 
+int find(char* source, char c){
+	int size = strlen(source);	
+	int res = -1;	
+	while(size--){
+		if(source[size] == c){
+			res = size;	
+			break;
+		}
+	}
+	return res;
+}
+
+char* getFilename(char* source){
+	int size = strlen(source);
+	char* res;
+	if(size == 0)
+	{
+		return nullptr;
+	}	
+	int i = find(source,'/');
+	if(i == -1){
+		res = (char*) malloc(size);
+		strncpy(res,source,size);
+	}
+	else{
+		res = (char*) malloc(size - i);	
+		strncpy(res,source+i+1,size-i);
+
+	}
+	return res;
+}

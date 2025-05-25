@@ -1,7 +1,10 @@
 
-
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef FILES_H
+#define FILES_H
+
 struct File {
 	char* content;
 	int size;
@@ -11,5 +14,8 @@ struct File {
 };
 
 
-File* openFile( char* source);
+int openFile( char* source,File* file);
 void closeFile(File* file);
+char* getFilename(char* source);
+
+#endif
