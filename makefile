@@ -1,16 +1,31 @@
-CXX=g++
-SRCS=./src/main.cpp ./src/files.cpp ./src/screen.cpp ./src/editor.cpp
-OBJS=$(subst .cpp,.o,$(SRCS))
-LIB=-lncurses
-all: text-editor
+CXX = g++
+LIB = -lncurses
 
+# Source files
+SSRCS = ./src/main.cpp ./src/files.cpp ./src/editor.cpp
+LSRCS = ./src/linux_editor.cpp ./src/linux/screen_ncurses.cpp
+SRCS  = $(SSRCS) $(LSRCS)
+
+# Object files
+OBJS  = $(SRCS:.cpp=.o)
+
+# Headers
+HEADERS = $(shell find ./src -name '*.h')
+$(info $(HEADERS))
+# Default target
+all: linux
+
+# Build target for Linux
+linux: text-editor
+
+# Linking
 text-editor: $(OBJS)
-	$(CXX)	-o ./bin/text-editor $(OBJS) $(LIB)
+	$(CXX) -o ./bin/text-editor $(OBJS) $(LIB)
 
-main.o : ./src/main.cpp ./src/editor.h
-files.o : ./src/files.cpp ./src/files.h
-screen.o : ./src/screen.cpp ./src/files.h ./src/screen.h
-editor.o :  ./src/files.h ./src/screen.h
+# Compilation rule
+%.o: %.cpp $(HEADERS)
+	$(CXX) -c $< -o $@
 
-clean :
-	rm -f ./src/*.o && rm -f ./bin/text-editor
+# Clean
+clean:
+	rm -f $(OBJS) ./bin/text-editor
