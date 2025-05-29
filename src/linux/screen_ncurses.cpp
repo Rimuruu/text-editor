@@ -1,11 +1,11 @@
 #include "screen.h"
 
+#include "ncurses.h"
 
 void initScreen(){
     initscr();	
 	refresh();
     raw();
-	getch(); 
 }
 
 void deleteScreen(){

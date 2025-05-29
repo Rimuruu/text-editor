@@ -2,13 +2,15 @@
 
 void loop(Editor* e){
    while(e->isRunning){
-    e->isRunning = 0;
+	printFile(&(e->file));
    } 
 }
 
 
 void run(char* source ,Editor* e){
 	initEditor(source,e);
+	initScreen();
 	loop(e);
 	closeEditor(e);
+	deleteScreen();
 }

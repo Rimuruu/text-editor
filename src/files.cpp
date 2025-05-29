@@ -1,14 +1,21 @@
 #include "files.h"
 
+#define TMP_SIZE 128
 
 void loadFileContent(File* file){
 	long size = 0;
+	char tmp[TMP_SIZE];
 	fseek(file->fd,0,SEEK_END);
 	size = ftell(file->fd);
 	file->size = size;
 	file->content = (char*) malloc(size);
 	fseek(file->fd,0,SEEK_SET);
-	fgets(file->content,size,file->fd);
+	char* offset = file->content;
+	while(fgets(tmp,TMP_SIZE,file->fd)){
+		int sizeLine = strlen(tmp);
+		strncpy(offset,tmp,sizeLine);
+		offset += sizeLine;	
+	}
 }
 
 int openFile(char * source, File* file){

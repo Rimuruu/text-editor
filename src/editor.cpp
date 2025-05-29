@@ -5,9 +5,8 @@ int initEditor(char* source, Editor* e){
 	if(openFile(source,&(e->file))){
         e->isRunning = 0;
         return -1;
-	}	
-	printf("%s\n",e->file.content);	
-	printf("%s\n",e->file.filename);
+	}
+    int i = 0;	
     e->isRunning = 1;
 	return 0;
 }
