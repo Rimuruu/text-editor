@@ -11,7 +11,10 @@ int initEditor(char* source, Editor* e){
 	return 0;
 }
 
-
+void moveCursor(Editor* e,int dirX, int dirY){
+    e->cursorX += dirX;
+    e->cursorY += dirY;
+}
 
 void closeEditor(Editor* e){
 	closeFile(&(e->file));	

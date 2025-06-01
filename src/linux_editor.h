@@ -1,4 +1,5 @@
 #include "editor.h"
 #include "linux/screen.h"
-void run(Editor* e);
+#include <time.h>
+#include <errno.h>    
 void loop(Editor* e);
