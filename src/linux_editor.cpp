@@ -1,6 +1,13 @@
 #include "linux_editor.h"
 
+const int64_t FPS = 60;
+const int64_t frameTime = 1000/FPS;
 
+int64_t millis() {
+    struct timespec now;
+    timespec_get(&now, TIME_UTC);
+    return ((int64_t) now.tv_sec) * 1000 + ((int64_t) now.tv_nsec) / 1000000;
+}
 
 int msleep(long msec) {
     struct timespec ts;
@@ -22,11 +29,24 @@ int msleep(long msec) {
 }
 
 void loop(Editor* e){
+   int64_t timeSpend,timeStart = millis(),timeEnd = millis(),timeStartLoop = millis();
+   int64_t frameCount = 0;
    while(e->isRunning){
+
+   	timeStart = millis();
 	handleEvent(e);
-	//printFile(&(e->file));
-	//renderScreen();
-	msleep(1000/60);
+	printFile(e);
+	renderScreen();
+	timeEnd = millis();
+	timeSpend =timeEnd - timeStart; 		
+	if(timeSpend < frameTime)
+		msleep(frameTime - (timeSpend));
+	timeSpend = timeEnd - timeStartLoop;
+	if(timeSpend >= 1000){
+		frameCount = 0;
+		timeStartLoop = millis();
+	}
+	frameCount++;
    } 
 }
 

@@ -10,7 +10,7 @@ extern int rows,cols;
 
 void deleteScreen();
 void initScreen();
-void printFile(File* file);
+void printFile(Editor* e);
 void renderScreen();
 void handleEvent(Editor* e);
 void moveCursorScreen(Editor* e,int dirX,int dirY);

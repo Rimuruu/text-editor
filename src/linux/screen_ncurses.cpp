@@ -22,10 +22,11 @@ void deleteScreen(){
 	endwin();
 }
 
-void printFile(File* file){
+void printFile(Editor* e){
     move(0,0);
-    printw("%d %d",rows,cols);
-    printw("%s",file->content);
+    printw("%s",e->file.content);
+    move(e->cursorX,e->cursorY);
+
 }
 
 
@@ -36,6 +37,7 @@ void renderScreen(){
 void moveCursorScreen(Editor* e,int dirX,int dirY){
     moveCursor(e,dirX,dirY);
     move(e->cursorX,e->cursorY);
+    //printf("%d %d\n",e->cursorX,e->cursorY);
 }
 
 
@@ -60,10 +62,7 @@ void handleKey(Editor* e,int key){
 }
 
 void handleEvent(Editor* e){
-    printf("start");
 	int key = getch();
-
-    printf("end");
 	while(key != ERR){
         handleKey(e,key);
         key = getch();
