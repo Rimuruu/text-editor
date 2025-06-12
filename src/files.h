@@ -6,8 +6,8 @@
 #define FILES_H
 
 struct File {
-	char* content;
-	int size;
+	char** content; // todo load line by line 
+	int rows,size;
 	char* filename;
 	char* source;
 	FILE* fd;
@@ -17,5 +17,6 @@ struct File {
 int openFile( char* source,File* file);
 void closeFile(File* file);
 char* getFilename(char* source);
+void addLine(File* f);
 
 #endif

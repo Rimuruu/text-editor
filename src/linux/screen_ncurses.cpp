@@ -24,7 +24,9 @@ void deleteScreen(){
 
 void printFile(Editor* e){
     move(0,0);
-    printw("%s",e->file.content);
+    const int maxRows = e->file.rows > rows ? rows : e->file.rows;
+    for(int i = 0; i < maxRows; i++)
+        printw("%s",e->file.content[i]);
     move(e->cursorX,e->cursorY);
 
 }
@@ -35,9 +37,16 @@ void renderScreen(){
 }
 
 void moveCursorScreen(Editor* e,int dirX,int dirY){
+    if(e->cursorX + dirX < 0 || e->cursorX + dirX >= rows  ){
+        dirX = 0;
+    } 
+    if(e->cursorY + dirY < 0 || e->cursorY + dirY >= cols  ){
+        dirY = 0;
+    }
+    
     moveCursor(e,dirX,dirY);
     move(e->cursorX,e->cursorY);
-    //printf("%d %d\n",e->cursorX,e->cursorY);
+    
 }
 
 

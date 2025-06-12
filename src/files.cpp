@@ -2,22 +2,51 @@
 
 #define TMP_SIZE 128
 
+bool isNewLine(char * line,int size){
+	size--;
+	while(size >= 0){
+		if(line[size] == '\n'  ){
+			return true;
+		}
+		size--;
+	}
+	return false;
+}
+
 void loadFileContent(File* file){
 	long size = 0;
 	char tmp[TMP_SIZE];
 	fseek(file->fd,0,SEEK_END);
 	size = ftell(file->fd);
-	file->size = size;
-	file->content = (char*) malloc(size);
 	fseek(file->fd,0,SEEK_SET);
-	char* offset = file->content;
+	file->size = size;
+	file->content = (char **) malloc(sizeof(char *));
+	file->content[0] = (char *) malloc(sizeof(char ));
+	file->rows = 1;
+	int line = 0, lineOffset = 0;	
+	memset(tmp, '\0', TMP_SIZE);
+
 	while(fgets(tmp,TMP_SIZE,file->fd)){
-		int sizeLine = strlen(tmp);
-		strncpy(offset,tmp,sizeLine);
-		offset += sizeLine;	
+		int sizeLine = strlen(tmp)+1;
+		file->content[line] = (char *) realloc(file->content[line],sizeof(char) * (lineOffset+ sizeLine ));
+		memset(file->content[line]+lineOffset, '\0', sizeLine);
+		strncpy(file->content[line]+lineOffset,tmp,sizeLine);
+
+		lineOffset += sizeLine;
+		if(isNewLine(tmp,sizeLine)){
+			addLine(file);
+			line++;
+			lineOffset = 0;
+		}
+		memset(tmp, '\0', TMP_SIZE);
 	}
 }
+void addLine(File* f){
 
+	f->content = (char **) realloc(f->content, sizeof(char*) * ++f->rows);
+	f->content[f->rows-1] = nullptr; // garbage value;		
+
+}
 int openFile(char * source, File* file){
 	FILE* fd;
 	if(file == nullptr){
@@ -41,6 +70,8 @@ int openFile(char * source, File* file){
 
 void closeFile(File* file){
 	fclose(file->fd);
+	for(int i=0; i< file->rows; i++)
+		free(file->content[i]);
 	free(file->content);
 	free(file->filename);
 	
