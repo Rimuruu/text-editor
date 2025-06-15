@@ -18,5 +18,5 @@ int openFile( char* source,File* file);
 void closeFile(File* file);
 char* getFilename(char* source);
 void addLine(File* f);
-
+void addLineFromIndex(File* f,int index);
 #endif
