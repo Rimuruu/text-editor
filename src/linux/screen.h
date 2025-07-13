@@ -9,7 +9,7 @@
 extern int rows,cols;
 
 void deleteScreen();
-void initScreen();
+void initScreen(Editor* e);
 void printFile(Editor* e);
 void renderScreen();
 void handleEvent(Editor* e);

@@ -54,7 +54,7 @@ void loop(Editor* e){
 void run(char* source ,Editor* e){
 	initEditor(source,e);
 	printf("%s",e->file.content);	
-	initScreen();
+	initScreen(e);
 	loop(e);
 	closeEditor(e);
 	deleteScreen();

@@ -38,11 +38,8 @@ int loadFromFileDescriptor(File* file){
 		strncpy(file->content[line]+lineOffset,tmp,sizeLine);
 		lineOffset += sizeLine;
 		if(isNewLine(tmp,sizeLine)){
-			//addLine(file);
-
+			addLine(file);
 			line++;
-
-			addLineFromIndex(file,line);
 			lineOffset = 0;
 		}
 		memset(tmp, '\0', TMP_SIZE);
