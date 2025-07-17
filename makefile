@@ -2,8 +2,8 @@ CXX = g++
 LIB = -lncurses
 
 # Source files
-SSRCS = ./src/main.cpp ./src/files.cpp ./src/editor.cpp
-LSRCS = ./src/linux_editor.cpp ./src/linux/screen_ncurses.cpp
+SSRCS = ./src/main.cpp ./src/files.cpp ./src/editor.cpp ./src/debug.cpp
+LSRCS = ./src/linux_editor.cpp ./src/linux/screen_ncurses.cpp 
 SRCS  = $(SSRCS) $(LSRCS)
 
 # Object files

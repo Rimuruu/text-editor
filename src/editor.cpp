@@ -26,7 +26,8 @@ void moveCursorY(Editor* e,int dirY){
     int maxY = e->file.rows;
     int nextPos = e->cursorY + dirY;
     int nextPosFile = nextPos + e->scrollY;
-    printf("%d %d %d %d",e->maxY, nextPos, maxY,nextPosFile);
+    log_debug("%d %d %d %d\n",e->maxY, nextPos, maxY,nextPosFile);
+    log_debug("%d\n",1);
     if(!(nextPosFile >= maxY)  && !(nextPos >= e->maxY-1) && !(nextPos < 0) ){
             printf("%d %d down", nextPosFile, e->maxY);
             int maxX = strlen(e->file.content[nextPosFile]);

@@ -52,6 +52,7 @@ void loop(Editor* e){
 
 
 void run(char* source ,Editor* e){
+	create_debug_file();
 	initEditor(source,e);
 	printf("%s",e->file.content);	
 	initScreen(e);

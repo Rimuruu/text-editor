@@ -1,5 +1,5 @@
 #include "files.h"
-
+#include "debug.h"
 #ifndef EDITOR_H
 #define EDITOR_H
 
