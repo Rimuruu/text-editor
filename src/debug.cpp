@@ -4,7 +4,7 @@ void log_debug(const char *fmt, ...) {
 
     va_list args;
     va_start(args, fmt);
-    FILE *log = fopen("debug.log", "w");
+    FILE *log = fopen("debug.log", "a");
     if (log) {
         vfprintf(log, fmt, args);
         fclose(log);

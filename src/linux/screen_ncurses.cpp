@@ -1,22 +1,55 @@
 #include "screen.h"
 #include "ncurses.h"
-
+#include <signal.h>
 #define KEY_ESCAPE 27
 
 
-int rows,cols = 0;
+int rows,cols,scrollX = 0,scrollY = 0;
+Editor* editor;
+#ifdef TABSIZE
+    int tabsize = TABSIZE;
+#else
+    int tabsize = 8;
+#endif
+int get_tabsize() {
+    return TABSIZE;  
+}
 
-void initScreen(Editor* e){
+void refreshEditor(Editor *e){
+    endwin();               
     initscr();	
 	refresh();
     noecho();
-    nodelay(stdscr,TRUE); // non blocking getch
+    nodelay(stdscr,TRUE);
     getmaxyx(stdscr,rows,cols);
     e->maxX = cols;
     e->maxY = rows; 
     cbreak();
     keypad(stdscr, TRUE);
+    set_tabsize(TABSIZE);
+    refreshCursor(e);
 
+}
+
+void handle_winch(int sig){
+   refreshEditor(editor); 
+}
+
+
+
+void initScreen(Editor* e){
+    initscr();	
+	refresh();
+    noecho();
+    nodelay(stdscr,TRUE); 
+    getmaxyx(stdscr,rows,cols);
+    e->maxX = cols;
+    e->maxY = rows; 
+    editor = e;
+    cbreak();
+    keypad(stdscr, TRUE);
+    signal(SIGWINCH, handle_winch);
+    set_tabsize(TABSIZE);
 }
 
 void deleteScreen(){
@@ -25,19 +58,70 @@ void deleteScreen(){
 
 void printFile(Editor* e){
     move(0,0);
-    const int start = e->scrollY;
+    const int start = scrollY;
     const int maxRows = e->file.rows > rows+start ? rows+start : e->file.rows;
-    for(int i = start; i < maxRows; i++)
-        printw("%s",e->file.content[i]);
+ 
+    for(int i = start; i < maxRows; i++){
+        const int startX = scrollX;
+        const int textSize = strlen(e->file.content[i]);
+        const int maxCols = textSize > cols ? cols+startX: textSize;
+        for(int y = startX; y < maxCols; y++){
+            printw("%c",e->file.content[i][y]);
+        }
+        if(startX >= maxCols){
+            printw("\n");
+        }
+      
+    }
     for(int i = 0; i < maxRows-start; i++)
         printw("\n");
-    move(e->cursorY,e->cursorX);
+    int translatedX  = translateX(e);
+    move(e->cursorY-scrollY,translatedX);
+    log_debug("move cursor to %d %d\n",e->cursorY-scrollY,translatedX);
 
 }
 
 
 void renderScreen(){
     refresh();
+}
+
+int charCountBefore(char * s, char f,int x){
+    int r = 0;
+    for(int i = x; i >= 0 ; i--){
+        if(s[i] == f){
+            {
+                r++;
+            }
+        }
+    } 
+    return r;
+}
+
+int  translateX(Editor* e){
+    int x = e->cursorX-scrollX;
+    int tabsCount = charCountBefore(e->file.content[e->cursorY],'\t',x-1) * (TABSIZE-1);
+    x += tabsCount;
+    return x;
+}
+
+void checkScroll(Editor* e){
+    log_debug("scrollY %d %d %d", scrollY, rows, e->file.rows);
+    int colsFile = strlen(e->file.content[e->cursorY]);
+    if(e->cursorY >= rows+scrollY && rows+scrollY < e->file.rows){
+
+        scrollY++;
+    }
+    if(e->cursorY < scrollY && scrollY != 0){
+        scrollY--;
+    }
+    if(e->cursorX >= cols+scrollX && cols+scrollX < colsFile){
+
+        scrollX++;
+    }
+    if(e->cursorX < scrollX && scrollX != 0){
+        scrollX--;
+    }
 }
 
 void moveCursorScreen(Editor* e,int dirX,int dirY){
@@ -49,7 +133,8 @@ void moveCursorScreen(Editor* e,int dirX,int dirY){
     }*/
     
     moveCursor(e,dirX,dirY);
-    move(e->cursorX,e->cursorY);
+    checkScroll(e);
+    move(e->cursorY,translateX(e));
     
 }
 
@@ -80,4 +165,11 @@ void handleEvent(Editor* e){
         handleKey(e,key);
         key = getch();
     }
+}
+
+int get_charsize(char c){
+    if(c == '\n'){
+        return get_tabsize();
+    }
+    return 1;
 }
