@@ -59,6 +59,58 @@ void addLine(File* f){
 	f->content = (char **) realloc(f->content, sizeof(char*) * ++f->rows);
 	f->content[f->rows-1] = nullptr; // garbage value;		
 }
+void moveFromTo(char * s, int x, int size){
+	for(int i = size ; i > x; i--){
+
+		s[i] = s[i-1];
+	}
+	
+}
+
+void moveFromToLine(char ** s, int y, int size){
+	for(int i = size ; i > y; i--){
+
+		s[i] = s[i-1];
+	}
+	
+}
+
+void addLineAt(File* f,int x,int y){	
+	int size = strlen(f->content[y]);	
+	int newLineSize = size - x;
+	int oldLineSize = size - newLineSize;
+	char* s;
+	char * tmp = (char *) malloc(sizeof(char*) * (newLineSize));
+	strncpy(tmp,f->content[y]+x,newLineSize);
+
+	s = (char*) realloc(f->content[y],sizeof(char)*oldLineSize+2);
+	if(s == nullptr){
+		log_debug("nullptr failed \n");
+		return;
+	}
+	f->content[y] = tmp;
+	addLine(f);	
+	moveFromToLine(f->content,y,f->rows-1);
+	f->content[y] = s;
+	f->content[y][oldLineSize+1]='\0';
+	f->content[y][oldLineSize]='\n';
+
+}
+
+void addCharAt(File* f,int x,int y,char c){
+	int size = strlen(f->content[y]);
+	char* s;
+	s = (char*) realloc(f->content[y],sizeof(char)*(size+2));
+	if(s == nullptr){
+		log_debug("nullptr failed \n");
+		return;
+	}
+	f->content[y] = s;
+	moveFromTo(f->content[y],x,size);		
+	f->content[y][size+1]='\0';
+	f->content[y][x] = c;
+}
+
 
 void addLineFromIndex(File* f,int index){
 	addLine(f);
@@ -76,13 +128,14 @@ int openFile(char * source, File* file){
 	if(source == nullptr){
 		return -1;
 	}
-	fd = fopen(source, "r");
+	fd = fopen(source, "rw");
 	if(fd == NULL){
 		return -1;
 	}
 
 	file->fd = fd;
 	file->filename = getFilename(source);
+	file->source = source;
 	loadFileContent(file);
 	return 0;
 
@@ -129,3 +182,12 @@ char* getFilename(char* source){
 	}
 	return res;
 }
+
+void saveFile(File* file) {
+	FILE *log = fopen(file->source, "w");
+	for(int i = 0; i< file->rows; i++){
+    	fprintf(log,file->content[i] );
+	}
+	fclose(log);
+}
+

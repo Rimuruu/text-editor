@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "debug.h"
 #ifndef FILES_H
 #define FILES_H
 
@@ -19,4 +20,7 @@ void closeFile(File* file);
 char* getFilename(char* source);
 void addLine(File* f);
 void addLineFromIndex(File* f,int index);
+void addCharAt(File* f,int x,int y,char c);
+void addLineAt(File* f,int y,int x);
+void saveFile(File* file);
 #endif

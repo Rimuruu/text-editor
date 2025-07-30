@@ -1,6 +1,7 @@
 #include "screen.h"
 #include "ncurses.h"
 #include <signal.h>
+#include <ctype.h>
 #define KEY_ESCAPE 27
 
 
@@ -148,6 +149,18 @@ void handleKey(Editor* e,int key){
             break;
         case KEY_RIGHT:
             moveCursorScreen(e,1,0);
+            break;
+        case '\n':
+            case KEY_ENTER:
+            addLine(e);     
+            break;
+        case KEY_F(1): 
+            saveFile(e);
+            break;
+        default:
+            if(isprint(key)){
+                addChar(e,(char)key);
+            }
             break;
     }
 }

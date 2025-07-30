@@ -70,3 +70,19 @@ void refreshCursor(Editor* e ){
         e->cursorX = e->maxX-1;
     }
 }
+
+void addChar(Editor* e, char c ){
+    addCharAt(&(e->file),e->cursorX,e->cursorY,c);
+    e->cursorX++;
+}
+
+void addLine(Editor*e ){
+    addLineAt(&(e->file),e->cursorX,e->cursorY);
+    e->cursorY++;
+    e->cursorX=0;
+}
+
+
+void saveFile(Editor* e){
+    saveFile(&(e->file));
+}

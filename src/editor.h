@@ -17,4 +17,7 @@ int initEditor(char * source,Editor* e);
 void moveCursor(Editor*e ,int dirX,int dirY);
 void closeEditor(Editor* e);
 void refreshCursor(Editor* e );
+void addChar(Editor* e, char c);
+void addLine(Editor*e );
+void saveFile(Editor* e);
 #endif
