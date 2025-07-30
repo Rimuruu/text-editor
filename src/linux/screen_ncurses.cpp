@@ -77,7 +77,6 @@ void printFile(Editor* e){
         printw("\n");
     int translatedX  = translateX(e);
     move(e->cursorY-scrollY,translatedX);
-    log_debug("move cursor to %d %d\n",e->cursorY-scrollY,translatedX);
 
 }
 
@@ -106,7 +105,6 @@ int  translateX(Editor* e){
 }
 
 void checkScroll(Editor* e){
-    log_debug("scrollY %d %d %d", scrollY, rows, e->file.rows);
     int colsFile = strlen(e->file.content[e->cursorY]);
     if(e->cursorY >= rows+scrollY && rows+scrollY < e->file.rows){
 
@@ -125,12 +123,7 @@ void checkScroll(Editor* e){
 }
 
 void moveCursorScreen(Editor* e,int dirX,int dirY){
-    /*if(e->cursorX + dirX < 0 || e->cursorX + dirX >= cols  ){
-        dirX = 0;
-    } 
-    if(e->cursorY + dirY < 0 || e->cursorY + dirY >= rows  ){
-        dirY = 0;
-    }*/
+
     
     moveCursor(e,dirX,dirY);
     checkScroll(e);
