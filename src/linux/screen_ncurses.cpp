@@ -7,14 +7,9 @@
 
 int rows,cols,scrollX = 0,scrollY = 0;
 Editor* editor;
-#ifdef TABSIZE
-    int tabsize = TABSIZE;
-#else
-    int tabsize = 8;
+#ifndef TABSIZE
+    #define TABSIZE 8
 #endif
-int get_tabsize() {
-    return TABSIZE;  
-}
 
 void refreshEditor(Editor *e){
     endwin();               
@@ -151,11 +146,17 @@ void handleKey(Editor* e,int key){
             moveCursorScreen(e,1,0);
             break;
         case '\n':
-            case KEY_ENTER:
+        case KEY_ENTER:
             addLine(e);     
             break;
         case KEY_F(1): 
             saveFile(e);
+            break;
+        case KEY_BACKSPACE:
+            deleteChar(e);
+            break;
+        case '\t':
+            addChar(e,'\t');
             break;
         default:
             if(isprint(key)){
@@ -175,7 +176,7 @@ void handleEvent(Editor* e){
 
 int get_charsize(char c){
     if(c == '\n'){
-        return get_tabsize();
+        return TABSIZE;
     }
     return 1;
 }

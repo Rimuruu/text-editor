@@ -19,5 +19,6 @@ void closeEditor(Editor* e);
 void refreshCursor(Editor* e );
 void addChar(Editor* e, char c);
 void addLine(Editor*e );
+void deleteChar(Editor* e);
 void saveFile(Editor* e);
 #endif

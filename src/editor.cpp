@@ -76,6 +76,20 @@ void addChar(Editor* e, char c ){
     e->cursorX++;
 }
 
+void deleteChar(Editor* e ){
+    if(e->cursorX>0){
+        deleteCharAt(&(e->file),e->cursorX-1,e->cursorY);
+        e->cursorX--;
+    }
+    else if (e->cursorX == 0 && e-> cursorY > 0){
+        int lastLineSize = strlen(e->file.content[e->cursorY-1]);
+        deleteLine(&(e->file),e->cursorY);
+        e->cursorY--;
+        e->cursorX = lastLineSize == 1 ? 0 : lastLineSize;
+    }
+
+}
+
 void addLine(Editor*e ){
     addLineAt(&(e->file),e->cursorX,e->cursorY);
     e->cursorY++;
